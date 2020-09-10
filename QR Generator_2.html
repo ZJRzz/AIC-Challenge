@@ -1,0 +1,130 @@
+<html>
+    <head>
+        <title>Invoice Generator</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script type="text/javascript">
+            function generateBarCode()
+            {
+                var invoice_date = 'invoice date: ' + $('#invoice_date').val();
+		invoice_date = invoice_date + 'invoice number: ' +$('#inv_num').val();
+		invoice_date = invoice_date + 'order number: ' + $('#order_num').val();
+		invoice_date = invoice_date + 'due date: ' + $('#due_date').val();
+		invoice_date = invoice_date + 'qty:' + $('#qty').val();
+		invoice_date = invoice_date + 'item:' + $('#item').val();
+		invoice_date = invoice_date + 'price:' + $('#price').val();
+		invoice_date = invoice_date + 'gst:' + $('#gst').val();
+		invoice_date = invoice_date + 'amount:' + $('#amount').val();
+		invoice_date = invoice_date + 'subtotal:' + $('#subtotal').val();
+		invoice_date = invoice_date + 'gst total:' + $('#gst_total').val();
+		invoice_date = invoice_date + 'total:' + $('#total').val();
+                var url = 'https://api.qrserver.com/v1/create-qr-code/?data=' + invoice_date + '&amp;size=200x200';
+                $('#barcode').attr('src', url);
+            }
+        </script>
+    </head>
+    <body>
+	<table border="1" width="100%" style="text-align:center;">
+		<tr>
+			<td>
+				<h2>Invoice </h2>
+			</td>
+			<td>
+				<img id='barcode' 
+            			src="https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&amp;size=100x100" 
+            			alt="" 
+            			title="HELLO" 
+            			width="200" 
+            			height="200" />
+			</td>
+		<tr>
+			<tr style="text-align:left;">
+			<td>
+				<label for ='fname'> Invoice Date:</label>
+				<input type='date' id ='invoice_date' value ='DD/MM/YYYY' ></input>
+			</td>
+		</tr>
+		<tr>
+			<tr style="text-align:left;">
+			<td>
+				<label for ='fname'> Invoice Number:</label>
+				<input type='text' id ='inv_num' value ='INV-3337' ></input>			
+		</td></tr>
+		<tr>
+			<tr style="text-align:left;">
+			<td>
+			<label for ='fname'> Order Number:</label>
+			<input type='text' id ='order_num' value ='1234' ></input>			
+		</td></tr>
+		<tr>
+			<tr style="text-align:left;">
+			<td>
+				<label for ='fname'> Due Date:</label>
+				<input type='date' id ='due_date' value ='DD/MM/YYYY' ></input>
+			</td>
+		</tr>
+	</table> 
+
+	<p1>Items</p1>
+	<table  border="1" width="100%" style="text-align:center;">
+		<tr>
+			<td>
+				<label for = 'fname'> Qty </label>
+			</td>
+			<td>
+				<label for = 'fname'> Item </label>
+			</td>
+			<td>
+				<label for = 'fname'> Price </label>
+			</td>
+			<td>
+				<label for = 'fname'> GST Rate </label>
+			</td>
+			<td>
+				<label for = 'fname'> Amount </label>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type='int' id='qty' value ='2' ></input>
+			</td>
+			<td>
+				<input type='text' id='item' value ='Apple Airpod' ></input>
+			</td>
+			<td>
+				<input type='text' id='price' value ='300' ></input>
+			</td>
+			<td>
+				<input type='text' id='gst' value ='7%' ></input>
+			</td>
+			<td>
+				<input type='text' id='amount' value ='600' ></input>
+			</td>
+		</tr>
+	</table>
+
+<table  border="1" width="100%" style="text-align:right;">
+	<tr><td>	
+		<label for ='fname'> Subtotal:</label>
+		<input type='ext' id ='subtotal' value ='600.00' ></input>
+	</td></tr>
+	<tr><td>	
+		<label for ='fname'> GST:</label>
+		<input type='ext' id ='gst_total' value ='42.00' ></input>
+	</td></tr>
+	<tr><td>	
+		<label for ='fname'> Total:</label>
+		<input type='ext' id ='total' value ='642.00' ></input>
+	</td></tr>
+	<tr>
+		<tr style="text-align:centre;">
+		<td>
+		<button onclick ='generateBarCode();'> Generate QR Code</button>
+	</td></tr>
+	<tr>
+		<tr style="text-align:centre;">
+		<td>
+		<button onclick="window.print()">Print this page</button>
+	</td></tr>
+	</table>
+    </body>
+</html>
