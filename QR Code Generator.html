@@ -6,17 +6,19 @@
             function generateBarCode()
             {
                 var invoice_date = 'invoice date: ' + $('#invoice_date').val();
-		invoice_date = invoice_date + 'invoice number: ' +$('#inv_num').val();
-		invoice_date = invoice_date + 'order number: ' + $('#order_num').val();
-		invoice_date = invoice_date + 'due date: ' + $('#due_date').val();
-		invoice_date = invoice_date + 'qty:' + $('#qty').val();
-		invoice_date = invoice_date + 'item:' + $('#item').val();
-		invoice_date = invoice_date + 'price:' + $('#price').val();
-		invoice_date = invoice_date + 'gst:' + $('#gst').val();
-		invoice_date = invoice_date + 'amount:' + $('#amount').val();
-		invoice_date = invoice_date + 'subtotal:' + $('#subtotal').val();
-		invoice_date = invoice_date + 'gst total:' + $('#gst_total').val();
-		invoice_date = invoice_date + 'total:' + $('#total').val();
+		invoice_date = invoice_date + '\n invoice number: ' +$('#inv_num').val();
+		invoice_date = invoice_date + '\n order number: ' + $('#order_num').val();
+		invoice_date = invoice_date + '\n due date: ' + $('#due_date').val();
+		invoice_date = invoice_date + '\n Bill to: ' + $('#bill_to').val();
+		invoice_date = invoice_date + '\n Bill from: ' + $('#bill_from').val();
+		invoice_date = invoice_date + '\n qty:' + $('#qty').val();
+		invoice_date = invoice_date + '\n item:' + $('#item').val();
+		invoice_date = invoice_date + '\n price:' + $('#price').val();
+		invoice_date = invoice_date + '\n gst:' + $('#gst').val();
+		invoice_date = invoice_date + '\n amount:' + $('#amount').val();
+		invoice_date = invoice_date + '\n subtotal:' + $('#subtotal').val();
+		invoice_date = invoice_date + '\n gst total:' + $('#gst_total').val();
+		invoice_date = invoice_date + '\n total:' + $('#total').val();
                 var url = 'https://api.qrserver.com/v1/create-qr-code/?data=' + invoice_date + '&amp;size=200x200';
                 $('#barcode').attr('src', url);
             }
@@ -60,6 +62,20 @@
 			<td>
 				<label for ='fname'> Due Date:</label>
 				<input type='date' id ='due_date' value ='DD/MM/YYYY' ></input>
+			</td>
+		</tr>
+		<tr>
+			<tr style="text-align:left;">
+			<td>
+				<label for ='fname'> Bill from:</label>
+				<input type='text' id ='bill_from' value ='Apple Inc.' ></input>
+			</td>
+		</tr>
+		<tr>
+			<tr style="text-align:left;">
+			<td>
+				<label for ='fname'> To:</label>
+				<input type='text' id ='bill_to' value ='ABC Pte. Ltd.' ></input>
 			</td>
 		</tr>
 	</table> 
