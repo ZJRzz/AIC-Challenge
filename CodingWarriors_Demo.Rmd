@@ -1,0 +1,104 @@
+---
+title: "Problem Statement 5 Codes (AIC 2020)"
+author: "CodingWarriors"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 4
+    toc_float: 
+      collapsed: TRUE
+      smooth_scroll: FALSE
+    number_sections: TRUE
+    code_folding: show 
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#Importing relevant libraries
+library(tidyverse)
+library(pdftools)
+library(xlsx)
+library(tabulizer)
+```
+
+# Function to extract information 
+
+We first define extract_info function to extract the relevant information from an invoice with a pre-defined search area. After which, we will conduct data wrangling and cleaning on the extracted data.
+```{r}
+#Defining function to extract Invoice values
+extract_info <- function(invoice){
+
+  area = list(c(196.9688, 31.6875, 248.5312, 580.3125)) #Search area extracted using tabulizer::locate_areas()
+  
+  raw_df <- extract_tables(
+    invoice, pages = 1, area = area, 
+    guess = FALSE, output = "data.frame"
+  ) %>% 
+    purrr::pluck(1)  %>%
+    set_names(c("Company", "Invoice.Issue.Date", "Invoice.Number", "Total.Due")) 
+  
+   raw_df$Total.Due <- raw_df$Total.Due %>%
+     map_chr(~trimws(gsub("\\$|,", "", .x)))
+  
+  result_df <- data.frame(Company = raw_df$Company[2], Invoice.Issue.Date = raw_df$Invoice.Issue.Date[1], Invoice.Number = raw_df$Invoice.Number[1], Total.Due = as.numeric(raw_df$Total.Due[2]))
+  
+  result_df
+}
+
+```
+
+# Extracting information from all Invoices
+We will then apply the function defined above to all of the invoices, storing all of the extracted data in a table format.
+```{r}
+invoices <- list.files() %>% .[grepl(".pdf", .)] 
+
+invoices_df <- data.frame(Company = NA, Invoice.Issue.Date = NA, Invoice.Number = NA, Total.Due = NA)[numeric(0),]
+
+#Apply extract_info function to all of the invoices
+for (j in 1:length(invoices)) {
+  invoices_df <- rbind(invoices_df,extract_info(invoices[j]))
+}
+
+invoices_df
+```
+
+# Analyzing Client's financial data 
+The recorded financial data of the audit client is extracted for analysis to identify errors. 
+```{r}
+client_data <- read.xlsx("Client_Financial_Data.xlsx", 1)
+
+client_data
+```
+
+
+# Output an excel file which contains errors in Client's financial data
+The errors are then subsequently stored in a new excel file titled "Error_Summary.xlsx" for manual processing. The "No." columns represent the rows in the Client's financial data which contains error(s) (NA indicates missing records in Client's financial data).
+
+```{r}
+client_data$Total.Due <- client_data$Total.Due %>%
+     map_chr(~trimws(gsub("\\$|,", "", .x))) %>%
+  as.numeric()
+
+combined_df <- full_join(
+  anti_join(invoices_df, client_data, by = colnames(invoices_df)), 
+  anti_join(client_data, invoices_df, by = colnames(invoices_df)), 
+  by = colnames(invoices_df)
+  ) 
+
+rbind(
+  combined_df %>%
+    filter(Invoice.Number %in% distinct(.,Invoice.Number)[[1]] & !is.na(No.)), 
+  combined_df %>%
+    filter(!(Invoice.Number %in% client_data$Invoice.Number))
+) %>%
+  write.xlsx(., "Error_Summary.xlsx",sheetName="Errors", col.names=TRUE, row.names=FALSE, append=FALSE)
+
+read.xlsx("Error_Summary.xlsx",sheetName="Errors")
+```
